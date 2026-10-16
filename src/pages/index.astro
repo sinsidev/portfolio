@@ -1,9 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import PhotoGrid from '../components/PhotoGrid.astro';
+import ArtGrid from '../components/ArtGrid.astro';
 ---
 
-<Layout>
-  <h1 class="gallery-label">Digital</h1>
-  <PhotoGrid collection="digital" />
+<Layout
+  title="Art"
+  description="A portfolio of artworks, studies, and creative experiments."
+>
+  <h1 class="gallery-label">Art</h1>
+  <ArtGrid />
 </Layout>

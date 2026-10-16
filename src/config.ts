@@ -17,19 +17,17 @@ export const site = {
   nameZh: '',
   title: 'Your Name',
   description:
-    'A minimal photography portfolio and blog — digital and film galleries, a photo-a-month calendar, and two blogs.',
+    'An interdisciplinary art and maker portfolio, project journal, and commonplace blog.',
 };
 
-// Left-hand navigation. "Digital" is the home page and shows by default.
+// Main navigation. Art is the home page.
 export const nav: NavItem[] = [
-  { label: 'Digital', href: '/' },
-  { label: 'Analog', href: '/analog' },
-  { label: 'Calendar', href: '/calendar' },
-  { label: 'Tech Blog', href: '/blog/tech' },
-  { label: 'Photo Blog', href: '/blog/photography' },
+  { label: 'Art', href: '/' },
+  { label: 'Maker', href: '/maker' },
+  { label: 'Project Blog', href: '/project-blog' },
+  { label: 'Commonplace Blog', href: '/commonplace-blog' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
-  { label: 'License', href: '/license' },
 ];
 
 // Social / external links shown in the sidebar and on the contact page. Replace

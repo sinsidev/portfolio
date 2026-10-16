@@ -35,4 +35,36 @@ const photography = defineCollection({
   schema: blogSchema,
 });
 
-export const collections = { tech, photography };
+
+// Art portfolio categories, displayed alphabetically.
+export const artCategories = [
+  'Calligraphy',
+  'Digital',
+  'Diorama',
+  'Drawing',
+  '3D Modelling',
+  'Painting',
+  'Sculpting',
+  'Textile',
+] as const;
+
+const art = defineCollection({
+  loader: glob({
+    pattern: '**/*.{md,mdx}',
+    base: './src/content/art',
+  }),
+  schema: ({ image }) => z.object({
+    title: z.string(),
+    cover: image(),
+    coverAlt: z.string().default(''),
+    categories: z.array(z.enum(artCategories)).min(1),
+    description: z.string().optional(),
+    year: z.number().int().optional(),
+    materials: z.array(z.string()).default([]),
+    techniques: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { tech, photography, art };
+

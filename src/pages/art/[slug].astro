@@ -1,0 +1,60 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const artworks = await getCollection('art', ({ data }) => !data.draft);
+
+  return artworks.map((artwork) => ({
+    params: { slug: artwork.id.replace(/\.(md|mdx)$/, '') },
+    props: { artwork },
+  }));
+}
+
+interface Props {
+  artwork: CollectionEntry<'art'>;
+}
+
+const { artwork } = Astro.props;
+const { Content } = await render(artwork);
+const { title, description, cover, coverAlt, categories, year, materials, techniques } =
+  artwork.data;
+---
+
+<Layout title={title} description={description ?? title}>
+  <article class="page prose">
+    <header>
+      <h1 class="page__title">{title}</h1>
+
+      {description && <p class="lede">{description}</p>}
+
+      <p>
+        {categories.join(' · ')}
+        {year && ` · ${year}`}
+      </p>
+    </header>
+
+    <Image
+      src={cover}
+      alt={coverAlt || title}
+      widths={[480, 800, 1200, 1600]}
+      sizes="(max-width: 768px) 100vw, 900px"
+      style="width: 100%; height: auto;"
+    />
+
+    <Content />
+
+    {(materials.length > 0 || techniques.length > 0) && (
+      <footer>
+        {materials.length > 0 && (
+          <p><strong>Materials:</strong> {materials.join(', ')}</p>
+        )}
+        {techniques.length > 0 && (
+          <p><strong>Techniques:</strong> {techniques.join(', ')}</p>
+        )}
+      </footer>
+    )}
+  </article>
+</Layout>
