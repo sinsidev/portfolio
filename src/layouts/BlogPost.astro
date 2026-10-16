@@ -4,6 +4,7 @@ import ShareButton from '../components/ShareButton.astro';
 import Lightbox from '../components/Lightbox.astro';
 import { Image } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
+import { withBase } from '../utils/paths';
 
 interface Props {
   title: string;
