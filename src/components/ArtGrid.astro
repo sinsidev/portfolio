@@ -13,15 +13,15 @@ const artworks = (await getCollection('art', ({ data }) => !data.draft))
 const categories = artCategories;
 ---
 
-<section class="art-gallery" aria-label="Art portfolio">
-  <div class="art-filters" role="group" aria-label="Filter artworks by category">
+<section class="art-gallery" aria-label="Art portfolio" data-i18n-aria-label="artGalleryLabel">
+  <div class="art-filters" role="group" aria-label="Filter artworks by category" data-i18n-aria-label="artFilterLabel">
     <button
       type="button"
       class="art-filter is-active"
       data-category="all"
       aria-pressed="true"
     >
-      All
+      <span data-i18n="artAll">All</span>
     </button>
 
     {categories.map((category) => (
@@ -31,7 +31,9 @@ const categories = artCategories;
         data-category={category}
         aria-pressed="false"
       >
-        {category}
+        <span data-i18n={`artCategory${category.replace(/[^a-zA-Z0-9]/g, "")}`}>
+          {category}
+        </span>
       </button>
     ))}
   </div>
@@ -61,7 +63,7 @@ const categories = artCategories;
     ))}
   </div>
 
-  <p class="art-empty" hidden>
+  <p class="art-empty" data-i18n="artEmpty" hidden>
     No artworks match the selected categories.
   </p>
 </section>
@@ -70,12 +72,12 @@ const categories = artCategories;
   .art-filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
+    gap: 0.6rem;
+    margin: 1.5rem 0 2rem;
   }
 
   .art-filter {
-    padding: 0.45rem 0.8rem;
+    padding: 0.45rem 0.9rem;
     border: 1px solid currentColor;
     border-radius: 999px;
     background: transparent;
@@ -83,7 +85,7 @@ const categories = artCategories;
     font: inherit;
     font-size: 0.85rem;
     cursor: pointer;
-    opacity: 0.55;
+    opacity: 0.65;
   }
 
   .art-filter:hover,
@@ -92,7 +94,7 @@ const categories = artCategories;
   }
 
   .art-filter.is-active {
-    font-weight: 700;
+    font-weight: bold;
   }
 
   .art-grid {

@@ -40,11 +40,11 @@ const BLOCK = [
 ];
 
 export const GET: APIRoute = ({ site }) => {
-  const sitemap = site ? new URL('sitemap-index.xml', site).href : '/sitemap-index.xml';
+  const sitemap = site ? new URL('art-blogpholio/sitemap-index.xml', site).href : '/sitemap-index.xml';
 
   const lines = [
     '# Search engines and AI search/citation crawlers are welcome.',
-    '# AI training / bulk dataset crawlers are blocked — the photography and',
+    '# AI training / bulk dataset crawlers are blocked — the artwork and',
     '# writing here is discoverable, not training data.',
     '',
     'User-agent: *',

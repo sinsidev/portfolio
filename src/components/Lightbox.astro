@@ -8,7 +8,7 @@
   <button class="lightbox__nav lightbox__prev" type="button" aria-label="Previous photo">&#8249;</button>
   <figure class="lightbox__figure">
     <img class="lightbox__img" alt="" draggable="false" />
-    <figcaption class="lightbox__caption" hidden></figcaption>
+
   </figure>
   <button class="lightbox__nav lightbox__next" type="button" aria-label="Next photo">&#8250;</button>
 </div>
@@ -19,7 +19,6 @@
 
   if (lightbox && tiles.length) {
     const image = lightbox.querySelector('.lightbox__img') as HTMLImageElement;
-    const caption = lightbox.querySelector('.lightbox__caption') as HTMLElement;
     const btnClose = lightbox.querySelector('.lightbox__close') as HTMLButtonElement;
     const btnPrev = lightbox.querySelector('.lightbox__prev') as HTMLButtonElement;
     const btnNext = lightbox.querySelector('.lightbox__next') as HTMLButtonElement;
@@ -31,9 +30,6 @@
       index = (i + tiles.length) % tiles.length;
       const tile = tiles[index];
       image.alt = tile.dataset.alt ?? '';
-      const cap = tile.dataset.caption ?? '';
-      caption.textContent = cap;
-      caption.hidden = cap === '';
       if (shown === index) return; // already displaying this photo
       shown = index;
       const ticket = ++seq;

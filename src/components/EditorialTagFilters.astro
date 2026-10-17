@@ -1,0 +1,138 @@
+---
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+const uniqueTags = [...new Set(tags)].sort();
+---
+
+<div class="editorial-filters" data-editorial-filters>
+  <div
+    class="editorial-filters__buttons"
+    role="group"
+    aria-label="Filter by tags" data-i18n-aria-label="editorialFilterLabel"
+  >
+    {uniqueTags.map(tag => (
+      <button
+        type="button"
+        data-filter={tag}
+        aria-pressed="false"
+      >
+        #{tag}
+      </button>
+    ))}
+
+    <button
+      type="button"
+      data-clear-tags
+      data-i18n="clearTags"
+      hidden
+    >
+      Clear
+    </button>
+  </div>
+</div>
+
+<script>
+  function setupEditorialFilters() {
+    document.querySelectorAll<HTMLElement>(
+      '[data-editorial-filters]'
+    ).forEach(container => {
+      if (container.dataset.initialized === 'true') return;
+      container.dataset.initialized = 'true';
+
+      const buttons = container.querySelectorAll<HTMLButtonElement>(
+        'button[data-filter]'
+      );
+
+      const clear = container.querySelector<HTMLButtonElement>(
+        '[data-clear-tags]'
+      );
+
+      const section = container.closest('.page');
+      if (!section) return;
+
+      const entries = section.querySelectorAll<HTMLElement>(
+        '.editorial-entry'
+      );
+
+      const selected = new Set<string>();
+
+      function update() {
+        buttons.forEach(button => {
+          const active = selected.has(button.dataset.filter ?? '');
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        });
+
+        entries.forEach(entry => {
+          const tags: string[] = JSON.parse(
+            entry.dataset.tags ?? '[]'
+          );
+
+          entry.hidden = selected.size > 0 &&
+            ![...selected].some(tag => tags.includes(tag));
+        });
+
+        if (clear) clear.hidden = selected.size === 0;
+      }
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const tag = button.dataset.filter;
+          if (!tag) return;
+
+          if (selected.has(tag)) selected.delete(tag);
+          else selected.add(tag);
+
+          update();
+        });
+      });
+
+      clear?.addEventListener('click', () => {
+        selected.clear();
+        update();
+      });
+
+      update();
+    });
+  }
+
+  setupEditorialFilters();
+  document.addEventListener('astro:page-load', setupEditorialFilters);
+</script>
+
+<style>
+  .editorial-filters__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .editorial-filters button {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.65;
+  }
+
+  .editorial-filters button:hover,
+  .editorial-filters button.active {
+    opacity: 1;
+  }
+
+  .editorial-filters button.active {
+    font-weight: bold;
+  }
+
+  .editorial-filters button[hidden] {
+    display: none;
+  }
+</style>

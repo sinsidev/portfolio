@@ -1,28 +1,12 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from '../../layouts/Layout.astro';
+import MakerGrid from '../../components/MakerGrid.astro';
 ---
 
 <Layout
   title="Maker"
-  description="Making, fabrication, prototyping, and technical experimentation."
+  description="A portfolio of fabrication, 3D printing, cosplay, electronics, and carpentry projects."
 >
-  <main class="page prose">
-    <h1 class="page__title">Maker</h1>
-
-    <p class="lede">
-      A collection of things made, built, and explored.
-    </p>
-
-    <p>
-      This section brings together fabrication projects,
-      prototypes, 3D printing, functional objects, and
-      experiments with materials and techniques.
-    </p>
-
-    <p>
-      Projects will be presented in a visual gallery,
-      with individual pages documenting their development,
-      processes, and results.
-    </p>
-  </main>
+  <h1 class="page__title" data-i18n="maker">Maker</h1>
+  <MakerGrid />
 </Layout>

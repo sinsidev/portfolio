@@ -394,25 +394,8 @@ a {
   border-radius: 3px;
 }
 
-/* Calendar gallery — a captioned grid (month + location under each photo) */
-.calendar-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: calc(var(--gap) + 0.7rem) var(--gap);
-}
 
-.calendar-item {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
 
-.calendar-caption {
-  margin-top: 0.55rem;
-  font-size: 1rem;
-  color: var(--muted);
-  letter-spacing: 0.01em;
-}
 
 /* ── Lightbox ──────────────────────────────────────────────────────────── */
 .lightbox {
@@ -723,65 +706,25 @@ a {
   max-width: var(--read);
 }
 
-.post-card {
-  padding: 1.8rem 0;
-  border-top: 1px solid var(--line);
-}
 
-.post-card:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
 
-.post-card__link {
-  text-decoration: none;
-  color: var(--fg);
-}
 
-.post-card__title {
-  font-family: var(--serif-display);
-  font-weight: 500;
-  font-size: clamp(1.6rem, 3.2vw, 2rem);
-  line-height: 1.12;
-  letter-spacing: 0.01em;
-  transition: opacity 0.2s ease;
-}
-
-.post-card__link:hover .post-card__title {
-  opacity: 0.55;
-}
-
-.post-card__excerpt {
-  margin-top: 0.7rem;
-  color: #2b2b29;
-}
 
 /* Meta row (date · reading time) — separators are drawn with ::before so an
    absent item (e.g. a post without a reading time) never leaves a dangling dot. */
-.post__meta,
-.post-card__meta {
+.post__meta {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   color: var(--muted);
   font-size: 1rem;
 }
-
-.post-card__meta {
-  margin-top: 0.5rem;
-  font-size: 0.98rem;
-}
-
-.post__meta > * + *::before,
-.post-card__meta > * + *::before {
+.post__meta > * + *::before {
   content: '·';
   margin: 0 0.55em;
   opacity: 0.7;
-}
-
-/* ── Tags ──────────────────────────────────────────────────────────────── */
-.post__tags,
-.post-card__tags {
+}/* ── Tags ──────────────────────────────────────────────────────────────── */
+.post__tags {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -790,9 +733,6 @@ a {
   gap: 0.5rem;
 }
 
-.post-card__tags {
-  margin-top: 0.85rem;
-}
 
 .tag {
   font-size: 0.8rem;
@@ -873,41 +813,10 @@ a {
   font-style: italic;
 }
 
-/* ── Share button ──────────────────────────────────────────────────────── */
-.share {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem 0.5rem 0.85rem;
-  background: none;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--fg);
-  font-family: var(--serif-body);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, transform 0.1s ease;
-  -webkit-tap-highlight-color: transparent;
-}
 
-.share:hover {
-  border-color: var(--fg);
-  background: #fff;
-}
 
-.share:active {
-  transform: translateY(1px);
-}
 
-.share.is-copied {
-  border-color: var(--brand);
-  color: var(--brand);
-}
 
-.share__icon {
-  width: 18px;
-  height: 18px;
-}
 
 /* ── Prose extras (Markdown blog content) ──────────────────────────────── */
 .prose h2 {
@@ -1283,9 +1192,7 @@ a {
 }
 
 /* ── Phones: single-column gallery ─────────────────────────────────────── */
-@media (max-width: 640px) {
-  .photo-grid,
-  .calendar-grid {
+@media (max-width: 640px) {.photo-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1313,11 +1220,11 @@ a {
    Additive and colors-only: layout and the light theme are unchanged. Toggled
    via data-theme="dark" on <html> (system preference + the sidebar toggle). */
 :root[data-theme='dark'] {
-  --bg: #272822; /* Monokai background */
-  --fg: #f8f8f2; /* Monokai foreground */
-  --muted: #8f8a76; /* readable Monokai comment tone */
-  --line: #3e3d32; /* Monokai UI line */
-  --brand: #b0ba9c; /* matches the dark tree's lighter green */
+  --bg: #1d2223; /* Monokai background */
+  --fg: #edf1ef; /* Monokai foreground */
+  --muted: #a5b4b0; /* readable Monokai comment tone */
+  --line: #394649; /* Monokai UI line */
+  --brand: #80c7a0; /* matches the dark tree's lighter green */
 }
 
 /* Logo: show the variant matching the active theme. */
@@ -1353,9 +1260,7 @@ a {
 :root[data-theme='dark'] ::selection {
   background: #49483e;
   color: #f8f8f2;
-}
-:root[data-theme='dark'] .prose p,
-:root[data-theme='dark'] .post-card__excerpt {
+}:root[data-theme='dark'] .prose p {
   color: #f8f8f2;
 }
 :root[data-theme='dark'] .prose code,
@@ -1370,9 +1275,7 @@ a {
    block background. (Light mode already gets this via .prose pre code.) */
 :root[data-theme='dark'] .prose pre code {
   background: none;
-}
-:root[data-theme='dark'] .contact-card:hover,
-:root[data-theme='dark'] .share:hover {
+}:root[data-theme='dark'] .contact-card:hover {
   background: #2d2e27;
 }
 :root[data-theme='dark'] .contact-card__icon {
@@ -1427,4 +1330,73 @@ a {
 :root[data-theme='dark'] .prose .token.regex,
 :root[data-theme='dark'] .prose .token.important {
   color: #fd971f;
+}
+
+
+/* === BLOG SECTION PALETTES === */
+/* Colors only: original typography, sizes and layout are preserved. */
+
+/* Project Blog — Nord Atelier, light */
+:root[data-section='project-blog'] {
+  --bg: #eceff4;
+  --fg: #2e3440;
+  --muted: #596576;
+  --line: #cbd3de;
+  --brand: #5e81ac;
+}
+
+/* Project Blog — Nord Atelier, dark */
+:root[data-section='project-blog'][data-theme='dark'] {
+  --bg: #242933;
+  --fg: #e5e9f0;
+  --muted: #a7b3c5;
+  --line: #4c566a;
+  --brand: #88c0d0;
+}
+
+/* Commonplace Blog — Ink & Paper, light */
+:root[data-section='commonplace-blog'] {
+  --bg: #f5f2eb;
+  --fg: #292b2c;
+  --muted: #756a60;
+  --line: #d8d1c4;
+  --brand: #a65b45;
+}
+
+/* Commonplace Blog — Ink & Paper, dark */
+:root[data-section='commonplace-blog'][data-theme='dark'] {
+  --bg: #1b1d1e;
+  --fg: #eeeae2;
+  --muted: #c5bdb3;
+  --line: #454542;
+  --brand: #d38a70;
+}/* Blog-specific overrides for legacy hard-coded colors. */
+:root[data-section='project-blog'] .prose p,
+:root[data-section='commonplace-blog'] .prose p {
+  color: var(--fg);
+}
+
+:root[data-section='project-blog'] .prose code,
+:root[data-section='commonplace-blog'] .prose code,
+:root[data-section='project-blog'] .empty code,
+:root[data-section='commonplace-blog'] .empty code {
+  background: var(--line);
+}
+
+:root[data-section='project-blog'] .prose pre,
+:root[data-section='commonplace-blog'] .prose pre {
+  background: var(--bg);
+}
+
+:root[data-section='project-blog'] .prose pre code,
+:root[data-section='commonplace-blog'] .prose pre code {
+  background: none;
+}:root[data-section='project-blog'] .contact-card:hover,
+:root[data-section='commonplace-blog'] .contact-card:hover {
+  background: var(--line);
+}
+
+:root[data-section='project-blog'] .prose blockquote,
+:root[data-section='commonplace-blog'] .prose blockquote {
+  border-left-color: var(--brand);
 }

@@ -18,6 +18,7 @@ import ebGaramondBody from '@fontsource/eb-garamond/files/eb-garamond-latin-400-
 import cormorantDisplay from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url';
 
 import Sidebar from '../components/Sidebar.astro';
+import Lightbox from '../components/Lightbox.astro';
 import BaseSchema from '../components/BaseSchema.astro';
 import { site } from '../config';
 
@@ -29,18 +30,50 @@ interface Props {
 const { title, description = site.description } = Astro.props;
 const pageTitle = title ? `${title} — ${site.name}` : site.title;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
-const ogImage = Astro.site ? new URL('/og.jpg', Astro.site).href : '/og.jpg';
+const ogImage = Astro.site ? new URL(withBase('/og.jpg'), Astro.site).href : '/og.jpg';
 // Footer copyright year (fixed at build time — a rebuild refreshes it).
 const year = new Date().getFullYear();
+const pathname = Astro.url.pathname;
+const section =
+  /(?:^|\/)project-blog(?:\/|$)/.test(pathname)
+    ? 'project-blog'
+    : /(?:^|\/)commonplace-blog(?:\/|$)/.test(pathname)
+      ? 'commonplace-blog'
+      : 'default';
+
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-section={section}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preload" href={ebGaramondBody} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={cormorantDisplay} as="font" type="font/woff2" crossorigin />
+    <script is:inline>
+      // Set language before the page is displayed.
+      // A manual choice overrides the browser language.
+      (function () {
+        var saved = null;
+
+        try {
+          saved = localStorage.getItem('language');
+        } catch (e) {}
+
+        var browserLanguage =
+          (navigator.language || 'en').toLowerCase();
+
+        var language =
+          saved === 'pt' || saved === 'en'
+            ? saved
+            : browserLanguage.startsWith('pt')
+              ? 'pt'
+              : 'en';
+
+        document.documentElement.lang = language;
+        document.documentElement.dataset.language = language;
+      })();
+    </script>
     <script is:inline>
       // Apply the saved (or system) theme before paint to avoid a flash. Manual
       // choice is persisted in localStorage by the toggle in the sidebar.
@@ -96,14 +129,18 @@ const year = new Date().getFullYear();
     <BaseSchema />
   </head>
   <body>
+    <script>
+      import '../utils/applyLanguage';
+    </script>
     <Sidebar />
+    <Lightbox />
     <main class="main">
       <slot />
       <footer class="site-footer">
         <p class="site-footer__line">
           <span>© {year} {site.name}</span>
-          <a class="site-footer__link" href={withBase('/privacy')}>Privacy</a>
-          <a class="site-footer__link" href={withBase('/license')}>Licensing</a>
+          <a class="site-footer__link" href={withBase('/privacy')} data-i18n="privacy">Privacy</a>
+          <a class="site-footer__link" href={withBase('/license')} data-i18n="licensing">Licensing</a>
         </p>
       </footer>
     </main>

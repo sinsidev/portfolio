@@ -17,3 +17,7 @@ node_modules/
 # os
 .DS_Store
 Thumbs.db
+
+# Local development files
+.local-backups/
+auditoria.txt

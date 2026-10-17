@@ -1,0 +1,222 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import { makerCategories } from '../content.config';
+import { withBase } from '../utils/paths';
+
+const artworks = (await getCollection('maker', ({ data }) => !data.draft))
+  .sort((a, b) =>
+    (b.data.year ?? 0) - (a.data.year ?? 0) ||
+    a.data.title.localeCompare(b.data.title)
+  );
+
+const categories = makerCategories;
+---
+
+<section class="art-gallery" aria-label="Maker portfolio" data-i18n-aria-label="makerGalleryLabel">
+  <div class="art-filters" role="group" aria-label="Filter projects by category" data-i18n-aria-label="makerFilterLabel">
+    <button
+      type="button"
+      class="art-filter is-active"
+      data-category="all"
+      aria-pressed="true"
+    >
+      <span data-i18n="makerAll">All</span>
+    </button>
+
+    {categories.map((category) => (
+      <button
+        type="button"
+        class="art-filter"
+        data-category={category}
+        aria-pressed="false"
+      >
+        <span data-i18n={`makerCategory${category.replace(/[^a-zA-Z0-9]/g, "")}`}>
+          {category}
+        </span>
+      </button>
+    ))}
+  </div>
+
+  <div class="art-grid">
+    {artworks.map((artwork) => (
+      <article
+        class="art-item"
+        data-categories={JSON.stringify(artwork.data.categories)}
+      >
+        <a
+          class="art-link"
+          href={withBase(`/maker/${artwork.id.replace(/\.(md|mdx)$/, '')}/`)}
+        >
+          <Image
+            src={artwork.data.cover}
+            alt={artwork.data.coverAlt || artwork.data.title}
+            widths={[320, 480, 720, 960]}
+            sizes="(max-width: 600px) 100vw, (max-width: 1000px) 50vw, 33vw"
+            loading="lazy"
+            class="art-image"
+          />
+
+          <h2 class="art-title">{artwork.data.title}</h2>
+        </a>
+      </article>
+    ))}
+  </div>
+
+  <p class="art-empty" data-i18n="makerEmpty" hidden>
+    No projects match the selected categories.
+  </p>
+</section>
+
+<style>
+  .art-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 1.5rem 0 2rem;
+  }
+
+  .art-filter {
+    padding: 0.45rem 0.9rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    opacity: 0.65;
+  }
+
+  .art-filter:hover,
+  .art-filter.is-active {
+    opacity: 1;
+  }
+
+  .art-filter.is-active {
+    font-weight: bold;
+  }
+
+  .art-grid {
+    columns: 3;
+    column-gap: 1.25rem;
+  }
+
+  .art-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    break-inside: avoid;
+    vertical-align: top;
+  }
+
+  .art-item[hidden] {
+    display: none;
+  }
+
+  .art-link {
+    display: block;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .art-image {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .art-title {
+    margin: 0.6rem 0 0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .art-empty {
+    margin: 2rem 0;
+  }
+
+  @media (max-width: 900px) {
+    .art-grid {
+      columns: 2;
+    }
+  }
+
+  @media (max-width: 550px) {
+    .art-grid {
+      columns: 1;
+    }
+  }
+</style>
+
+<script>
+  function initializeArtFilters() {
+    const gallery = document.querySelector<HTMLElement>('.art-gallery');
+    if (!gallery) return;
+
+    const buttons = Array.from(
+      gallery.querySelectorAll<HTMLButtonElement>('.art-filter')
+    );
+
+    const items = Array.from(
+      gallery.querySelectorAll<HTMLElement>('.art-item')
+    );
+
+    const emptyMessage =
+      gallery.querySelector<HTMLElement>('.art-empty');
+
+    const selected = new Set<string>();
+
+    function update() {
+      for (const button of buttons) {
+        const category = button.dataset.category;
+        const active = category === 'all'
+          ? selected.size === 0
+          : selected.has(category ?? '');
+
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', String(active));
+      }
+
+      let visibleCount = 0;
+
+      for (const item of items) {
+        const categories: string[] =
+          JSON.parse(item.dataset.categories ?? '[]');
+
+        const visible =
+          selected.size === 0 ||
+          categories.some((category) => selected.has(category));
+
+        item.hidden = !visible;
+        if (visible) visibleCount++;
+      }
+
+      if (emptyMessage) {
+        emptyMessage.hidden = visibleCount !== 0;
+      }
+    }
+
+    for (const button of buttons) {
+      button.addEventListener('click', () => {
+        const category = button.dataset.category;
+
+        if (!category || category === 'all') {
+          selected.clear();
+        } else if (selected.has(category)) {
+          selected.delete(category);
+        } else {
+          selected.add(category);
+        }
+
+        update();
+      });
+    }
+
+    update();
+  }
+
+  document.addEventListener('astro:page-load', initializeArtFilters);
+  initializeArtFilters();
+</script>

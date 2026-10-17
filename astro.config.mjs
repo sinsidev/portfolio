@@ -57,7 +57,7 @@ export default defineConfig({
     // the inlining threshold and shipped as an external file; whenever the
     // first paint beat that file, the page rendered unstyled and then snapped
     // into the sidebar layout — a near-whole-viewport Cumulative Layout Shift
-    // attributed to html>body>main.main (seen on /calendar/). Inlining
+    // attributed to html>body>main.main. Inlining
     // guarantees the first paint already matches the final layout, and drops a
     // render-blocking request.
     inlineStylesheets: 'always',

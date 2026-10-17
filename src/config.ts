@@ -34,7 +34,7 @@ export const nav: NavItem[] = [
 // the placeholders with your own. If you drop or add one, also update the
 // matching <Icon> in Sidebar.astro and the list in Contact.astro.
 export const social = {
-  instagram: 'https://www.instagram.com/yourusername',
-  linkedin: 'https://www.linkedin.com/in/yourusername',
-  github: 'https://github.com/yourusername',
+  instagram: '',
+  github: 'https://github.com/sinsidev',
+  whatsapp: '',
 };

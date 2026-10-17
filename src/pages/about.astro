@@ -1,72 +1,57 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import { withBase } from '../utils/paths';
-import Layout from "../layouts/Layout.astro";
-import { site, social } from "../config";
-
-// ── Edit everything below to tell your own story. ───────────────────────────
-// The little "fact" cards are just example fields — rename them, add more, or
-// remove the whole block if you prefer plain prose.
-const facts = [
-    { label: "Currently", line: "Photographer & writer", muted: "Your City, Country" },
-    { label: "Shooting", line: "Digital & 35mm film", muted: "Landscapes, travel, the everyday" },
-    { label: "Since", line: "20XX", muted: "Always learning" },
-];
 ---
 
 <Layout
-    title="About"
-    description={`About ${site.name} — photographer and writer.`}
+  title="About"
+  description="About this interdisciplinary art and maker portfolio."
 >
-    <article class="page prose">
-        <h1 class="page__title">About</h1>
+  <article class="page prose">
+    <h1 class="page__title" data-i18n="about">About</h1>
 
-        <p class="lede">
-            I'm {site.name} — a photographer and writer, and the person behind
-            the pictures on this site.
-        </p>
+    <p class="lede" data-i18n="aboutIntro">
+      This is a space for art, making, experimentation, and documenting creative processes.
+    </p>
 
-        <p>
-            This is placeholder copy from the template. Write a few short
-            paragraphs about yourself here: where you're based, what draws you to
-            photography, the cameras or film you like, and what you tend to point
-            a lens at. Keep it personal and brief — a paragraph or three is
-            plenty.
-        </p>
+    <p data-i18n="aboutWork">
+      My work moves between visual art, digital tools, physical fabrication, and creative research.
+      This website brings those interests together.
+    </p>
 
-        <p>
-            Photography is how I slow down and pay attention — to light, weather,
-            and the quiet shape of a place. The galleries here gather what I've
-            seen along the way.
-        </p>
+    <h2 data-i18n="aboutExplore">Explore the site</h2>
 
-        <p>
-            I write here, too: a <a href={withBase('/blog/tech')}>Tech Blog</a> for notes on
-            tools and building for the web, and a
-            <a href={withBase('/blog/photography')}>Photo Blog</a> of field notes on light,
-            places, and the craft of photography.
-        </p>
+    <p>
+      <a href={withBase('/')} data-i18n="aboutArtLink">Art</a>
+      <span data-i18n="aboutArtDescription">
+        is a collection of artwork, visual studies, and experiments.
+      </span>
+    </p>
 
-        <div class="facts">
-            {
-                facts.map((f) => (
-                    <section class="fact">
-                        <h2 class="fact__label">{f.label}</h2>
-                        <p class="fact__line">{f.line}</p>
-                        <p class="fact__muted">{f.muted}</p>
-                    </section>
-                ))
-            }
-        </div>
+    <p>
+      <a href={withBase('/maker')} data-i18n="aboutMakerLink">Maker</a>
+      <span data-i18n="aboutMakerDescription">
+        explores physical projects, fabrication, and making.
+      </span>
+    </p>
 
-        <p>
-            <a
-                class="text-link"
-                href={social.github}
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Find me elsewhere →
-            </a>
-        </p>
-    </article>
+    <p>
+      <a href={withBase('/project-blog')} data-i18n="aboutProjectLink">Project Blog</a>
+      <span data-i18n="aboutProjectDescription">
+        documents projects as they develop, including experiments, decisions, and results.
+      </span>
+    </p>
+
+    <p>
+      <a href={withBase('/commonplace-blog')} data-i18n="aboutCommonplaceLink">Commonplace Blog</a>
+      <span data-i18n="aboutCommonplaceDescription">
+        collects notes, references, techniques, and ideas connected through shared topics.
+      </span>
+    </p>
+
+    <p>
+      <span data-i18n="aboutContactIntro">For inquiries and links, visit</span>
+      <a href={withBase('/contact')} data-i18n="aboutContactLink">Contact</a>.
+    </p>
+  </article>
 </Layout>

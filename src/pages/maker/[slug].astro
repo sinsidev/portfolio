@@ -1,0 +1,79 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('maker', ({ data }) => !data.draft);
+
+  return projects.map((project) => ({
+    params: { slug: project.id.replace(/\.(md|mdx)$/, '') },
+    props: { project },
+  }));
+}
+
+interface Props {
+  project: CollectionEntry<'maker'>;
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+const {
+  title,
+  description,
+  cover,
+  coverAlt,
+  categories,
+  year,
+  materials,
+  tools,
+} = project.data;
+---
+
+<Layout title={title} description={description ?? title}>
+  <article class="page prose">
+    <header>
+      <h1 class="page__title">{title}</h1>
+
+      {description && <p class="lede">{description}</p>}
+
+      <p>
+        {categories.map((category, i) => (
+          <>
+            {i > 0 && ' · '}
+            <span data-i18n={`makerCategory${category.replace(/[^a-zA-Z0-9]/g, '')}`}>
+              {category}
+            </span>
+          </>
+        ))}
+        {year != null && ` · ${year}`}
+      </p>
+
+
+    </header>
+
+    <Image
+      src={cover}
+      alt={coverAlt || title}
+      widths={[480, 800, 1200, 1600]}
+      sizes="(max-width: 768px) 100vw, 900px"
+      style="width: 100%; height: auto;"
+    />
+
+    <Content />
+
+    {(materials.length > 0 || tools.length > 0) && (
+      <footer>
+        {materials.length > 0 && (
+          <p><strong data-i18n="detailMaterials">Materials:</strong> {materials.join(', ')}</p>
+        )}
+
+        {tools.length > 0 && (
+          <p><strong data-i18n="detailTools">Tools:</strong> {tools.join(', ')}</p>
+        )}
+      </footer>
+    )}
+  </article>
+</Layout>

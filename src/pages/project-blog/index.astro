@@ -1,26 +1,46 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from '../../layouts/Layout.astro';
+import EditorialPostList from '../../components/EditorialPostList.astro';
+import EditorialTagFilters from '../../components/EditorialTagFilters.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection(
+  'projectBlog',
+  ({ data }) => !data.draft
+)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+
 ---
 
 <Layout
   title="Project Blog"
   description="Development journals, creative processes, and project updates."
 >
-  <main class="page prose">
-    <h1 class="page__title">Project Blog</h1>
+  <section class="page prose project-blog">
+    <h1 class="page__title" data-i18n="projectBlog">Project Blog</h1>
 
-    <p class="lede">
-      Notes on projects, experiments, and works in progress.
-    </p>
+    <EditorialTagFilters
+      tags={posts.flatMap(post => post.data.tags)}
+    />
 
-    <p>
-      A chronological journal documenting creative and technical
-      projects, from early ideas and experiments to finished work.
-    </p>
+    <EditorialPostList
+      section="project-blog"
+      posts={posts.map(post => ({
+        id: post.id,
+        title: post.data.title,
+        description: post.data.description,
+        pubDate: post.data.pubDate,
+        tags: post.data.tags,
+        cover: post.data.cover,
+        coverAlt: post.data.coverAlt,
+        project: post.data.project,
+      }))}
+    />
 
-    <p>
-      Entries will also be grouped by project, making it possible
-      to follow each project's development over time.
-    </p>
-  </main>
+    {posts.length === 0 && (
+      <p data-i18n="projectBlogEmpty">No project updates yet.</p>
+    )}
+  </section>
 </Layout>

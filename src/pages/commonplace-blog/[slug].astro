@@ -1,0 +1,129 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
+import Layout from '../../layouts/Layout.astro';
+import { withBase } from '../../utils/paths';
+
+export async function getStaticPaths() {
+  const notes = await getCollection(
+    'commonplaceBlog',
+    ({ data }) => !data.draft
+  );
+
+  return notes.map((note) => ({
+    params: {
+      slug: note.id.replace(/\.(md|mdx)$/, ''),
+    },
+    props: { note },
+  }));
+}
+
+interface Props {
+  note: CollectionEntry<'commonplaceBlog'>;
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+
+const {
+  title,
+  description,
+  pubDate,
+  updatedDate,
+  tags,
+  related,
+  cover,
+  coverAlt,
+} = note.data;
+
+const allNotes = await getCollection(
+  'commonplaceBlog',
+  ({ data }) => !data.draft
+);
+
+const relatedNotes = related
+  .map((id) => allNotes.find((entry) => entry.id === id))
+  .filter((entry): entry is CollectionEntry<'commonplaceBlog'> =>
+    entry !== undefined
+  );
+
+const noteUrl = (id: string) =>
+  withBase(`/commonplace-blog/${id.replace(/\.(md|mdx)$/, '')}/`);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<Layout title={title} description={description ?? title}>
+  <article class="page prose">
+    <header>
+      <h1 class="page__title">{title}</h1>
+
+      {description && <p class="lede">{description}</p>}
+
+      <p>
+        <time datetime={pubDate.toISOString()} data-i18n-date>
+          {formatDate(pubDate)}
+        </time>
+      </p>
+
+      {updatedDate && (
+        <p>
+          <span data-i18n="postUpdated">Updated:</span>
+          <time datetime={updatedDate.toISOString()} data-i18n-date>
+            {formatDate(updatedDate)}
+          </time>
+        </p>
+      )}
+
+      <p><strong data-i18n="postTags">Tags:</strong> {tags.map((tag) => `#${tag}`).join(' · ')}</p>
+    </header>
+
+    {cover && (
+      <Image
+        src={cover}
+        alt={coverAlt || title}
+        widths={[480, 800, 1200, 1600]}
+        sizes="(max-width: 768px) 100vw, 900px"
+        style="width: 100%; height: auto;"
+      />
+    )}
+
+    <Content />
+
+    {relatedNotes.length > 0 && (
+      <aside class="related-notes">
+        <h2 data-i18n="relatedNotes">Related Notes</h2>
+
+        <ul>
+          {relatedNotes.map((relatedNote) => (
+            <li>
+              <a href={noteUrl(relatedNote.id)}>
+                {relatedNote.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .related-notes {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid currentColor;
+    border-color: color-mix(in srgb, currentColor 20%, transparent);
+  }
+
+  .related-notes h2 {
+    font-size: 1.4rem;
+  }
+</style>

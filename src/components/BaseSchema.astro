@@ -1,30 +1,41 @@
 ---
-// Site-wide JSON-LD: identifies the site and the photographer so search engines
-// and AI answer engines can understand who/what this is. Gallery pages add their
-// own ImageGallery / ImageObject graphs.
 import { site, social } from '../config';
+import { withBase } from '../utils/paths';
 
-const base = Astro.site ? Astro.site.href.replace(/\/$/, '') : '';
+// Structured data for the website and its creator.
+const absoluteUrl = (path: string) =>
+  Astro.site
+    ? new URL(withBase(path), Astro.site).href
+    : withBase(path);
+
+const home = absoluteUrl('/');
+const websiteId = `${home}#website`;
+const personId = `${home}#person`;
+
+const sameAs = [
+  social.github,
+  social.instagram,
+].filter((url): url is string => Boolean(url));
 
 const graph = {
   '@context': 'https://schema.org',
   '@graph': [
     {
       '@type': 'WebSite',
-      '@id': `${base}/#website`,
-      url: `${base}/`,
+      '@id': websiteId,
+      url: home,
       name: site.title,
       description: site.description,
-      inLanguage: 'en',
-      publisher: { '@id': `${base}/#person` },
+      inLanguage: ['en', 'pt-BR'],
+      publisher: { '@id': personId },
     },
     {
       '@type': 'Person',
-      '@id': `${base}/#person`,
+      '@id': personId,
       name: site.name,
-      url: `${base}/`,
-      jobTitle: 'Photographer',
-      sameAs: [social.instagram, social.linkedin, social.github],
+      url: home,
+      jobTitle: 'Visual Artist',
+      sameAs,
     },
   ],
 };

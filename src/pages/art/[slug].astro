@@ -31,7 +31,14 @@ const { title, description, cover, coverAlt, categories, year, materials, techni
       {description && <p class="lede">{description}</p>}
 
       <p>
-        {categories.join(' · ')}
+        {categories.map((category, i) => (
+          <>
+            {i > 0 && ' · '}
+            <span data-i18n={`artCategory${category.replace(/[^a-zA-Z0-9]/g, '')}`}>
+              {category}
+            </span>
+          </>
+        ))}
         {year && ` · ${year}`}
       </p>
     </header>
@@ -49,10 +56,10 @@ const { title, description, cover, coverAlt, categories, year, materials, techni
     {(materials.length > 0 || techniques.length > 0) && (
       <footer>
         {materials.length > 0 && (
-          <p><strong>Materials:</strong> {materials.join(', ')}</p>
+          <p><strong data-i18n="detailMaterials">Materials:</strong> {materials.join(', ')}</p>
         )}
         {techniques.length > 0 && (
-          <p><strong>Techniques:</strong> {techniques.join(', ')}</p>
+          <p><strong data-i18n="detailTechniques">Techniques:</strong> {techniques.join(', ')}</p>
         )}
       </footer>
     )}

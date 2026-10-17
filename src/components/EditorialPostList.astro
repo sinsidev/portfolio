@@ -1,0 +1,219 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import { withBase } from '../utils/paths';
+
+export interface EditorialPost {
+  id: string;
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tags: string[];
+  cover?: ImageMetadata;
+  coverAlt?: string;
+  project?: string;
+}
+
+interface Props {
+  posts: EditorialPost[];
+  section: 'project-blog' | 'commonplace-blog';
+}
+
+const { posts, section } = Astro.props;
+
+const postUrl = (id: string) =>
+  withBase(`/${section}/${id.replace(/\.(md|mdx)$/, '')}/`);
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+---
+
+<div class="editorial-list">
+  {posts.map((post) => (
+    <article
+      class:list={[
+        'editorial-entry',
+        { 'editorial-entry--image': Boolean(post.cover) },
+      ]}
+      data-tags={JSON.stringify(post.tags)}
+    >
+      {post.cover && (
+        <a
+          class="editorial-entry__image"
+          href={postUrl(post.id)}
+          aria-label={post.title}
+        >
+          <Image
+            src={post.cover}
+            alt={post.coverAlt || post.title}
+            width={240}
+            height={240}
+            fit="cover"
+            loading="lazy"
+          />
+        </a>
+      )}
+
+      <div class="editorial-entry__content">
+        <time
+          class="editorial-entry__date"
+          datetime={post.pubDate.toISOString()}
+          data-i18n-date
+        >
+          {formatDate(post.pubDate)}
+        </time>
+
+        <h2 class="editorial-entry__title">
+          <a href={postUrl(post.id)}>
+            {post.title}
+          </a>
+        </h2>
+
+        {post.description && (
+          <p class="editorial-entry__description">
+            {post.description}
+          </p>
+        )}
+
+        {post.project && (
+          <p class="editorial-entry__project">
+            <span data-i18n="postProject">Project:</span>
+            {' '}{post.project}
+          </p>
+        )}
+
+        {post.tags.length > 0 && (
+          <ul class="editorial-entry__tags" aria-label="Tags">
+            {post.tags.map((tag) => (
+              <li>#{tag}</li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .editorial-list {
+    width: 100%;
+  }
+
+  .editorial-entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 1.8rem 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .editorial-entry:first-child {
+    border-top: 0;
+    padding-top: 0;
+  }
+
+  .editorial-entry[hidden] {
+    display: none;
+  }
+
+  .editorial-entry--image {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+
+  .editorial-entry__image {
+    display: block;
+    width: 120px;
+    align-self: start;
+    overflow: hidden;
+    border-radius: 3px;
+  }
+
+  .editorial-entry__image img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    object-fit: cover;
+    transition: opacity 0.2s ease;
+  }
+
+  .editorial-entry__image:hover img {
+    opacity: 0.8;
+  }
+
+  .editorial-entry__content {
+    min-width: 0;
+  }
+
+  .editorial-entry__date,
+  .editorial-entry__project,
+  .editorial-entry__tags {
+    color: var(--muted);
+    font-size: 0.85rem;
+  }
+
+  .editorial-entry__title {
+    font-family: var(--serif-display);
+    font-size: clamp(1.6rem, 3.2vw, 2rem);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: 0.01em;
+    margin: 0.5rem 0 0;
+  }
+
+  .editorial-entry__title a {
+    color: var(--fg);
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .editorial-entry__title a:hover {
+    opacity: 0.55;
+  }
+
+  .editorial-entry__description {
+    margin: 0.7rem 0 0;
+    color: var(--fg);
+    line-height: 1.65;
+  }
+
+  .editorial-entry__project {
+    margin: 0.75rem 0 0;
+  }
+
+  .editorial-entry__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    list-style: none;
+    margin: 0.85rem 0 0;
+    padding: 0;
+  }
+
+  @media (max-width: 480px) {
+    .editorial-entry--image {
+      grid-template-columns: 88px minmax(0, 1fr);
+      gap: 1rem;
+    }
+
+    .editorial-entry__image {
+      width: 88px;
+    }
+
+    .editorial-entry {
+      padding: 1.5rem 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .editorial-entry__image img,
+    .editorial-entry__title a {
+      transition: none;
+    }
+  }
+</style>

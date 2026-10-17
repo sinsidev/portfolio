@@ -1,48 +1,76 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import { withBase } from '../utils/paths';
-import Layout from "../layouts/Layout.astro";
-import { site, social } from "../config";
+import { site } from '../config';
 ---
 
 <Layout
-    title="Image licensing"
-    description="Licensing and usage terms for the photographs on this site — every photograph is by the site owner, all rights reserved."
+  title="Copyright & Usage"
+  description="Copyright and usage information for artwork, projects, images, and writing."
 >
-    <article class="page prose">
-        <h1 class="page__title">Image licensing</h1>
+  <article class="page prose">
+    <h1 class="page__title" data-i18n="licenseTitle">Copyright & Usage</h1>
 
-        <p class="lede">
-            Every photograph on this site was made by me, {site.name}{site.nameZh && (
-                <> (<span class="name-zh">{site.nameZh}</span>)</>
-            )} — I shoot all of them myself. © {site.name}. All rights reserved.
-        </p>
+    <p class="lede" data-i18n="licenseIntro">
+      Unless otherwise stated, original content published on this website is protected by copyright. All rights reserved.
+    </p>
 
-        <p>
-            You're welcome to view the images here. They are not licensed for
-            reuse, redistribution, or modification, and they may not be used to
-            train machine-learning models.
-        </p>
+    <h2 data-i18n="licenseOriginalTitle">Original work</h2>
 
-        <p>
-            <strong
-                >No commercial use is permitted without my prior written
-                permission.</strong
-            > To license a photograph, or to use one for any commercial purpose, please
-            contact me first — I'm glad to discuss it.
-        </p>
+    <p>
+      <span data-i18n="licenseOriginalPrefix">
+        Artwork, illustrations, photographs, 3D creations, project documentation, and written content created by
+      </span>
+      {site.name}
+      <span data-i18n="licenseOriginalSuffix">
+        are protected by copyright.
+      </span>
+    </p>
 
-        <p>
-            Get in touch with me, {site.name}, on
-            <a
-                href={social.instagram}
-                target="_blank"
-                rel="noopener noreferrer">Instagram</a
-            > or
-            <a
-                href={social.linkedin}
-                target="_blank"
-                rel="noopener noreferrer">LinkedIn</a
-            >, or through the <a href={withBase('/contact')}>contact page</a>.
-        </p>
-    </article>
+    <p data-i18n="licensePersonalUse">
+      You are welcome to view this content for personal reference and enjoyment.
+    </p>
+
+    <h2 data-i18n="licensePermissionsTitle">Permissions</h2>
+
+    <p data-i18n="licensePermissionsText">
+      Reproduction, redistribution, modification, publication, and commercial use require prior permission unless explicitly authorized.
+    </p>
+
+    <h2 data-i18n="licenseExceptionsTitle">
+      Exceptions and third-party materials
+    </h2>
+
+    <p data-i18n="licenseExceptionsText">
+      Some projects may contain third-party materials, collaborative contributions, or content subject to separate licenses or agreements.
+    </p>
+
+    <p data-i18n="licenseConditionsText">
+      Where specific usage conditions are provided, those conditions take precedence over the general policy on this page.
+    </p>
+
+    <h2 data-i18n="licenseThirdPartyTitle">Third-Party Materials</h2>
+
+    <p data-i18n="licenseThirdPartyText">
+      This website may include third-party materials, such as visual references,
+      photographs, artwork, and other resources used in studies, research,
+      or projects. Rights to these materials remain with their respective holders.
+    </p>
+
+    <p data-i18n="licenseThirdPartyCredits">
+      Where applicable, authorship and source links are provided in the
+      captions of individual images. The general copyright policy of this
+      website does not grant permission to reuse third-party materials.
+    </p>
+
+    <h2 data-i18n="licenseContactTitle">Contact</h2>
+
+    <p>
+      <span data-i18n="licenseContactIntro">
+        For permission requests or licensing inquiries, please visit the
+      </span>
+      <a href={withBase('/contact')} data-i18n="licenseContactLink">Contact</a>
+      <span data-i18n="licenseContactEnd">page.</span>
+    </p>
+  </article>
 </Layout>

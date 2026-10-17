@@ -1,10 +1,11 @@
 ---
 import type { ImageMetadata } from 'astro';
+import { renderCaption } from '../utils/renderCaption';
 import { renderPhoto, POST_SIZES, captionFromFilename } from '../lib/photos';
 
 // A single in-post photo — rendered through the same web-resolution pipeline as
 // the galleries (responsive WebP, capped at MAX_WEB) and wired to the shared
-// Lightbox that BlogPost includes. Drop images in src/assets/blog/ and reference
+// Lightbox included by Layout. Drop images in src/assets/blog/ and reference
 // them by filename (no import needed):
 //
 //     <Photo src="lake-erie-fog.jpg" caption="Lake Erie, fog" />
@@ -12,7 +13,7 @@ import { renderPhoto, POST_SIZES, captionFromFilename } from '../lib/photos';
 interface Props {
   src: string; // filename within src/assets/blog/ (subfolders allowed)
   alt?: string; // defaults to the caption, else derived from the filename
-  caption?: string; // optional visible caption (also shown in the lightbox)
+  caption?: string; // optional visible caption below the image; hidden in the lightbox
 }
 const { src, alt, caption } = Astro.props;
 
@@ -31,6 +32,9 @@ if (!match) {
 
 const altText = alt ?? caption ?? captionFromFilename(src);
 const photo = await renderPhoto(match[1].default);
+
+const captionHtml = caption ? renderCaption(caption) : '';
+
 ---
 
 <figure class="post-figure">
@@ -40,7 +44,7 @@ const photo = await renderPhoto(match[1].default);
     aria-label={`${altText} — view larger`}
     data-full={photo.full}
     data-alt={altText}
-    data-caption={caption ?? ''}
+
   >
     <img
       class="photo__img"
@@ -53,5 +57,9 @@ const photo = await renderPhoto(match[1].default);
       draggable={false}
     />
   </button>
-  {caption && <figcaption class="post-figure__caption">{caption}</figcaption>}
+  {caption && (
+    <figcaption class="post-figure__caption">
+      <span set:html={captionHtml} />
+    </figcaption>
+  )}
 </figure>

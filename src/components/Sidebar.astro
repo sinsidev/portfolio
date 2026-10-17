@@ -28,15 +28,28 @@ const isActive = (href: string) => {
     </a>
 
     <div class="socials">
-      <a class="socials__link" href={social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
-        <Icon name="instagram" />
-      </a>
-      <a class="socials__link" href={social.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-        <Icon name="linkedin" />
-      </a>
-      <a class="socials__link" href={social.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-        <Icon name="github" />
-      </a>
+      {social.instagram && (
+        <a class="socials__link" href={social.instagram}
+          target="_blank" rel="noopener noreferrer"
+          aria-label="Instagram">
+          <Icon name="instagram" />
+        </a>
+      )}
+      {social.github && (
+        <a class="socials__link" href={social.github}
+          target="_blank" rel="noopener noreferrer"
+          aria-label="GitHub">
+          <Icon name="github" />
+        </a>
+      )}
+      <button
+        class="socials__link language-toggle"
+        type="button"
+        aria-label="Switch language"
+        title="Switch language"
+      >
+        PT
+      </button>
       <button class="socials__link theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
         <Icon name="moon" class="theme-toggle__moon" />
         <Icon name="sun" class="theme-toggle__sun" />
@@ -44,7 +57,7 @@ const isActive = (href: string) => {
     </div>
 
     <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">
-      <span class="nav-toggle__label">Menu</span>
+      <span class="nav-toggle__label" data-i18n="menu">Menu</span>
     </button>
 
     <nav id="primary-nav" class="nav" aria-label="Primary">
@@ -57,7 +70,18 @@ const isActive = (href: string) => {
                 class:list={['nav__link', { 'is-active': isActive(item.href) }]}
                 aria-current={isActive(item.href) ? 'page' : undefined}
               >
-                {item.label}
+                <span
+                  data-i18n={
+                    ({
+                      '/': 'art',
+                      '/maker': 'maker',
+                      '/project-blog': 'projectBlog',
+                      '/commonplace-blog': 'commonplaceBlog',
+                      '/about': 'about',
+                      '/contact': 'contact',
+                    } as Record<string, string>)[item.href]
+                  }
+                >{item.label}</span>
               </a>
             </li>
           ))
@@ -68,7 +92,7 @@ const isActive = (href: string) => {
 </header>
 
 <script>
-  const sidebar = document.querySelector('.sidebar');
+  const sidebar = document.querySelector<HTMLElement>('.sidebar');
   const toggle = sidebar?.querySelector<HTMLButtonElement>('.nav-toggle');
   const label = toggle?.querySelector('.nav-toggle__label');
   const menu = sidebar?.querySelector<HTMLElement>('.nav');
@@ -137,3 +161,58 @@ const isActive = (href: string) => {
     });
   }
 </script>
+
+
+<script>
+  // Language toggle: EN ↔ PT.
+  // The initial language is set in Layout.astro.
+  const languageToggle = document.querySelector<HTMLButtonElement>(
+    '.language-toggle'
+  );
+
+  if (languageToggle) {
+    const root = document.documentElement;
+
+    const syncLanguage = () => {
+      const language = root.lang === 'pt' ? 'pt' : 'en';
+
+      languageToggle.textContent = language === 'pt' ? 'EN' : 'PT';
+      languageToggle.setAttribute(
+        'aria-label',
+        language === 'pt'
+          ? 'Mudar idioma para inglês'
+          : 'Switch language to Portuguese'
+      );
+      languageToggle.title =
+        language === 'pt' ? 'English' : 'Português';
+    };
+
+    syncLanguage();
+
+    languageToggle.addEventListener('click', () => {
+      const next = root.lang === 'pt' ? 'en' : 'pt';
+
+      root.lang = next;
+      root.dataset.language = next;
+
+      try {
+        localStorage.setItem('language', next);
+      } catch {}
+
+      syncLanguage();
+      window.dispatchEvent(new CustomEvent('site-language-change', {
+        detail: { language: next }
+      }));
+    });
+  }
+</script>
+
+<style>
+  .language-toggle {
+    font-family: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+  }
+</style>

@@ -1,26 +1,39 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from '../../layouts/Layout.astro';
+import EditorialPostList from '../../components/EditorialPostList.astro';
+import EditorialTagFilters from '../../components/EditorialTagFilters.astro';
+import { getCollection } from 'astro:content';
+
+const notes = (await getCollection(
+  'commonplaceBlog',
+  ({ data }) => !data.draft
+)).sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+
 ---
 
-<Layout
-  title="Commonplace Blog"
-  description="A collection of notes, ideas, references, and discoveries."
->
-  <main class="page prose">
-    <h1 class="page__title">Commonplace Blog</h1>
+<Layout title="Commonplace Blog">
+  <section class="page prose">
+    <h1 class="page__title" data-i18n="commonplaceBlog">Commonplace Blog</h1>
 
-    <p class="lede">
-      A place for collecting thoughts, ideas, and discoveries.
-    </p>
+    <EditorialTagFilters
+      tags={notes.flatMap(note => note.data.tags)}
+    />
 
-    <p>
-      Notes on art, books, techniques, references, and subjects
-      worth exploring.
-    </p>
+    <EditorialPostList
+      section="commonplace-blog"
+      posts={notes.map(note => ({
+        id: note.id,
+        title: note.data.title,
+        description: note.data.description,
+        pubDate: note.data.pubDate,
+        tags: note.data.tags,
+        cover: note.data.cover,
+        coverAlt: note.data.coverAlt,
+      }))}
+    />
 
-    <p>
-      Entries will be organized chronologically, with filters
-      by topic and connections between related notes.
-    </p>
-  </main>
+  </section>
 </Layout>
