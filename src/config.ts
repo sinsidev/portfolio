@@ -10,12 +10,12 @@ export interface NavItem {
 }
 
 export const site = {
-  name: 'Your Name',
+  name: 'Bruna Souza',
   // Optional second-script name (e.g. a Chinese 中文名) shown under the brand and
   // in a couple of prose pages. Leave it '' to hide it everywhere. See the README
   // for how to self-host a font subset so it renders identically on every device.
   nameZh: '',
-  title: 'Your Name',
+  title: 'Bruna Souza',
   description:
     'An interdisciplinary art and maker portfolio, project journal, and commonplace blog.',
 };
@@ -34,7 +34,7 @@ export const nav: NavItem[] = [
 // the placeholders with your own. If you drop or add one, also update the
 // matching <Icon> in Sidebar.astro and the list in Contact.astro.
 export const social = {
-  instagram: '',
+  instagram: 'https://www.instagram.com/tech.master.3d/',
   github: 'https://github.com/sinsidev',
   whatsapp: '',
 };
