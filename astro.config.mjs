@@ -27,7 +27,7 @@ export default defineConfig({
   // sitemap, robots.txt, llms.txt, and the JSON-LD. CHANGE THIS to your own
   // domain; everything URL-bound is derived from it.
   site: 'https://sinsidev.github.io',
-  base: '/art-blogpholio',
+  base: '/portfolio',
 
   // Preserve Astro's pre-v7 HTML whitespace handling. Astro 7 changed the
   // default `compressHTML` from `true` to `'jsx'`, which strips whitespace with
