@@ -20,9 +20,9 @@ export const site = {
     'An interdisciplinary art and maker portfolio, project journal, and commonplace blog.',
 };
 
-// Main navigation. Art is the home page.
+// Main navigation. Home and Art are separate pages.
 export const nav: NavItem[] = [
-  { label: 'Art', href: '/' },
+  { label: 'Art', href: '/art/' },
   { label: 'Maker', href: '/maker' },
   { label: 'Project Blog', href: '/project-blog' },
   { label: 'Commonplace Blog', href: '/commonplace-blog' },

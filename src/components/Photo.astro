@@ -24,14 +24,14 @@ const images = import.meta.glob<{ default: ImageMetadata }>(
 const match = Object.entries(images).find(
   ([path]) => path.endsWith('/' + src) || path.split('/').pop() === src
 );
-if (!match) {
+if (!match && !src.startsWith('https://')) {
   throw new Error(
     `<Photo src="${src}"> not found in src/assets/blog/. Add the file there and reference it by filename.`
   );
 }
 
 const altText = alt ?? caption ?? captionFromFilename(src);
-const photo = await renderPhoto(match[1].default);
+const photo = await renderPhoto(src.startsWith('https://') ? src : match![1].default);
 
 const captionHtml = caption ? renderCaption(caption) : '';
 

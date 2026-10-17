@@ -49,7 +49,23 @@ export function captionFromFilename(name: string, fallbackIndex = 0): string {
 // Build a responsive WebP srcset from explicit per-width renditions, so no image
 // larger than the cap is ever generated. The largest rendition is reused as the
 // lightbox image.
-export async function renderPhoto(src: ImageMetadata): Promise<RenderedPhoto> {
+export async function renderPhoto(
+  src: ImageMetadata | string
+): Promise<RenderedPhoto> {
+  if (typeof src === 'string') {
+    const url = new URL(src);
+
+    if (url.protocol !== 'https:') {
+      throw new Error('External image URLs must use HTTPS.');
+    }
+
+    return {
+      src: url.href,
+      srcset: '',
+      full: url.href,
+    };
+  }
+
   const cap = Math.min(MAX_WEB, src.width || MAX_WEB);
   const widths = WIDTHS.filter((w) => w <= cap);
   if (!widths.includes(cap)) widths.push(cap);

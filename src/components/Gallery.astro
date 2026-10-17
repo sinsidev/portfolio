@@ -35,7 +35,7 @@ const items = await Promise.all(
   photos.map(async (entry, i) => {
     const o = typeof entry === 'string' ? { src: entry } : entry;
     const alt = o.alt ?? o.caption ?? captionFromFilename(o.src, i);
-    const photo = await renderPhoto(findMeta(o.src));
+    const photo = await renderPhoto(o.src.startsWith('https://') ? o.src : findMeta(o.src));
     return { ...photo, alt, caption: o.caption ?? '' };
   })
 );
